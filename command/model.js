@@ -14,12 +14,15 @@ const simpleHandler = options => {
 class Command {
 
 
-    register(h){
+    register(h) {
         this.handlers.push(h);
     }
 
     run({key, ...options}) {
-       return KEY === key ? Promise.all(this.handlers.map(h => h(options))) : Promise.reject({message: 'key not valid...'});
+        if (KEY === key)
+            return Promise.all(this.handlers.map(h => h(options))).then(items => items.filter(items => !!items));
+        else
+            return Promise.reject({message: 'key not valid...'});
     }
 
     constructor(h = []) {

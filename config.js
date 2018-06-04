@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     server: {
-        ip: '127.0.0.1',
+        ip: '192.168.1.11',
         port: 3001
     },
     db: 'mongodb://127.0.0.1/test',

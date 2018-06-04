@@ -25,7 +25,8 @@ const command = (options) => {
 
 };
 
-module.exports = (options) => {
+
+const logCommand = (options) => {
     cmd.run(options).then(p => {
         console.log(p);
     })
@@ -40,4 +41,14 @@ module.exports = (options) => {
         })
 
 };
+
+logCommand.register = (h) => {
+    cmd.register(h);
+};
+
+
+module.exports = logCommand;
+
+
+
 

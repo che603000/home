@@ -2,25 +2,26 @@ const net = require('net');
 const command = require('./command');
 
 const {server: {ip, port}} = require('./config');
-const parse = (txt) => JSON.parse(txt.toString('utf8'));
+const parse = (txt) => Promise.resolve().then(() => JSON.parse(txt.toString('utf8')));
+
 
 module.exports = options => {
     const server = net.createServer(function (socket) {
         socket.on('data', (data) => {
-            const action = parse(data);
-            command(action)
+            parse(data)
+                .then(data => {console.log(`res=> ${data.type}`); return data;})
+                .then(d => command(d))
                 .then(res => socket.write(JSON.stringify(res)))
-                .then(() => console.log(`res=> ${action.type}`))
                 .catch(err => {
-                    console.log(err);
-                    socket.end()
+                    console.log({err: err.message, data});
+                    socket.write(JSON.stringify({err: err.message}));
+                    socket.end();
                 });
         });
         socket.on('end', (data) => {
             //console.log('connection close...');
         });
         socket.on('error', function (err) {
-            debugger;
             console.log(err);
         });
     });
